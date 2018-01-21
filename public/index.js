@@ -145,6 +145,48 @@ const actors = [{
   }]
 }];
 
+function findTrucker(truckerId) {
+    var resultat = 0;
+    truckers.forEach(function (trucker) {
+        if (trucker.id === truckerId) {
+            resultat = trucker;
+        }
+    });
+    return resultat;
+}
+
+function findDelivery(deliveryId) {
+    var resultat = 0;
+    deliveries.forEach(function (delivery) {
+        if (delivery.id === deliveryId) {
+            resultat = delivery;
+        }
+    });
+    return resultat;
+}
+
+function updateDelivery(delivery) {
+    var trucker = findTruckerById(delivery.truckerId);
+    if (trucker === 0) {
+        return;
+    }
+    delivery.price = delivery.distance * trucker.pricePerKm;
+    var deliveryPricePerVolume = trucker.pricePerVolume;
+    if (delivery.volume > 10) {
+        deliveryPricePerVolume = trucker.pricePerVolume - trucker.pricePerVolume * 30 / 100;
+    } else if (delivery.volume > 5) {
+        deliveryPricePerVolume = trucker.pricePerVolume - trucker.pricePerVolume * 20 / 100;
+    } else if (delivery.volume > 2) {
+        deliveryPricePerVolume = trucker.pricePerVolume - trucker.pricePerVolume * 10 / 100;
+    }
+    if (delivery.options.deductibleReduction) {
+        deliveryPricePerVolume = deliveryPricePerVolume + 1;
+    }
+    delivery.price = delivery.price + (delivery.volume * deliveryPricePerVolume);
+}
+
+
+
 console.log(truckers);
 console.log(deliveries);
 console.log(actors);
